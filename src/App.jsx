@@ -30,31 +30,35 @@ function App() {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedFolder, setSelectedFolder] = useState(null);
 
-    // Load user data on mount
+    // Load user data and notes on mount
     useEffect(() => {
-        loadUserData();
+        loadInitialData();
     }, []);
 
-    // Load notes when view changes to notes
+    // Reload notes when search or folder filter changes (only if already loaded)
     useEffect(() => {
-        if (currentView === 'notes' && user) {
-            loadData();
-        }
-    }, [currentView, user]);
-
-    // Filter notes based on search and folder
-    useEffect(() => {
-        if (currentView === 'notes') {
+        if (currentView === 'notes' && notes.length >= 0) {
             loadFilteredNotes();
         }
-    }, [searchQuery, selectedFolder, currentView]);
+    }, [searchQuery, selectedFolder]);
 
-    const loadUserData = async () => {
+    const loadInitialData = async () => {
         try {
+            // Load user data
             const userData = await getSetting('user');
             setUser(userData);
+
+            // Load notes and folders if user exists
+            if (userData) {
+                const [notesData, foldersData] = await Promise.all([
+                    getAllNotes(),
+                    getAllFolders()
+                ]);
+                setNotes(notesData);
+                setFolders(foldersData);
+            }
         } catch (error) {
-            console.error('Error loading user:', error);
+            console.error('Error loading initial data:', error);
         } finally {
             setIsLoading(false);
         }
@@ -64,14 +68,7 @@ function App() {
         await setSetting('user', userData);
         setUser(userData);
         setCurrentView('home');
-    };
-
-    const handleUpdateUser = async (updatedUser) => {
-        await setSetting('user', updatedUser);
-        setUser(updatedUser);
-    };
-
-    const loadData = async () => {
+        // Load notes and folders for new user (will be empty initially)
         try {
             const [notesData, foldersData] = await Promise.all([
                 getAllNotes(),
@@ -79,15 +76,16 @@ function App() {
             ]);
             setNotes(notesData);
             setFolders(foldersData);
-
-            // Auto-select first note if available
-            if (notesData.length > 0 && !selectedNoteId) {
-                setSelectedNoteId(notesData[0].id);
-            }
         } catch (error) {
-            console.error('Error loading data:', error);
+            console.error('Error loading data after onboarding:', error);
         }
     };
+
+    const handleUpdateUser = async (updatedUser) => {
+        await setSetting('user', updatedUser);
+        setUser(updatedUser);
+    };
+
 
     const loadFilteredNotes = async () => {
         try {
