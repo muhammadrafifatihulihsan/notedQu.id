@@ -1,0 +1,45 @@
+{
+  "name": "notedquid",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Premium iOS-style note-taking app with local storage",
+  "author": "Your Name",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/notedQu.id.git"
+  },
+  "keywords": [
+    "notes",
+    "note-taking",
+    "ios-design",
+    "react",
+    "vite",
+    "tailwindcss",
+    "indexeddb",
+    "offline-first",
+    "local-storage"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "framer-motion": "^11.0.0",
+    "lucide-react": "^0.344.0",
+    "idb": "^8.0.0",
+    "date-fns": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.1.4",
+    "tailwindcss": "^3.4.1",
+    "postcss": "^8.4.35",
+    "autoprefixer": "^10.4.17"
+  }
+}
